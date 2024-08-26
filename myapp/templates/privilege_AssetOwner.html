@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>assetowner privilege</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-abc123..." crossorigin="anonymous" />
+
+<style>
+    body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .left {
+            width: 20%;
+            background-color: #222;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 10px;
+            color: white;
+        }
+
+.user-profile {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #444;
+        }
+        .user-profile img {
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            margin-right:5px;
+        }
+        .user-profile .username {
+            font-size: 20px;
+            color: white;
+        }
+        .navigation {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .navigation li {
+            margin: 20px 0;
+        }
+        .navigation a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .navigation a:hover {
+            background-color: #444;
+        }
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition-duration: 0.4s;
+            position: absolute;
+            bottom: 10px;
+            width:19.3%
+        }
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+        .dropdown {
+            display: none;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .dropdown li {
+            margin: 10px 0;
+        }
+        .dropdown a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .dropdown a:hover, .dropdown a:focus {
+            background-color: #444;
+        }
+        .show-dropdown .dropdown {
+            display: block;
+        }
+        .show-dropdown .navigation > li:not(.settings) {
+            display: none;
+        }
+        .show-dropdown .settings {
+            margin-top: 0;
+        }
+        .settings i.dropdown-icon {
+            margin-left: 10px;
+            transition: transform 0.3s;
+        }
+        .show-dropdown .settings i.dropdown-icon {
+            transform: rotate(180deg);
+        }
+
+
+
+.right {
+    width: 80%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow: auto;
+}
+.table-box {
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+}
+.table-box h2 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #333;
+}
+.table-container {
+    overflow-x: auto;
+    margin-top: 10px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+th, td {
+    
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 15px;
+
+}
+th {
+    background-color: #575d64;
+    color: #ddd;
+}
+
+
+
+
+        
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 30px;
+  height: 17px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 13px;
+  width: 13px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #03b123;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #03b123;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(13px);
+  -ms-transform: translateX(13px);
+  transform: translateX(13px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.btn{
+    text-align: center;
+    margin: auto;
+    width: 60%;
+    padding: 10px;
+}
+
+.login-button {
+    background-color: #2c3e50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 25%;
+}
+
+.login-button:hover {
+    background-color: #34495e; 
+}
+</style>
+    
+</head>
+<body>
+    {% if role == 'CISO' %}
+    {% include 'cisonavigation.html' %}
+    {% elif role == 'Fnhead' %}
+    {% include 'fnheadnavigation.html' %}
+    {% elif role == 'SystemAdmin' %}
+    {% include 'systemadminnavigation.html' %}
+    {% elif role == 'AssetOwner' %}
+    {% include 'assetownernavigation.html' %}
+    {% else %}
+    {% include 'adminnavigation.html' %}
+    {% endif %}
+    <div class="right">
+        <div class="table-box">
+            <h2>ASSET OWNER PRIVILEGE</h2>
+            <form action="{% url 'update_privileges' roles %}" method="post">
+                {% csrf_token %}
+            <div class="table-container">
+                <table id="userTable" role="table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Privilege Update</th>
+                            <th>Report Download</th>
+                        
+                            <th>View</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                            <th>Add</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                            <tr>
+                                <td>Assets</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="assetview" {% if privileges.assetview %} checked {% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="assetedit" {% if privileges.assetedit %} checked {% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="assetdelete"{% if privileges.assetdelete %} checked {% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="assetadd" {% if privileges.assetadd %} checked {% endif %} >
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                        <tr>
+                            <td>User</td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="userview" {% if privileges.userview %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="useredit" {% if privileges.useredit %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="userdelete"{% if privileges.userdelete %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="useradd" {% if privileges.useradd %} checked {% endif %} >
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Employee</td>
+                            <td></td>
+                            <td></td>
+                           
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="employeeview" {% if privileges.employeeview %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="employeeedit" {% if privileges.employeeedit %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="employeedelete"{% if privileges.employeedelete %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="employeeadd" {% if privileges.employeeadd %} checked {% endif %} >
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Location</td>
+                            <td></td>
+                            <td></td>
+                            
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="locationview" {% if privileges.locationview %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="locationedit" {% if privileges.locationedit %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="locationdelete"{% if privileges.locationdelete %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="locationadd" {% if privileges.locationadd %} checked {% endif %} >
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Department</td>
+                            <td></td>
+                            <td></td>
+                            
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="departmentview" {% if privileges.departmentview %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="departmentedit" {% if privileges.departmentedit %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="departmentdelete"{% if privileges.departmentdelete %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="departmentadd" {% if privileges.departmentadd %} checked {% endif %} >
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Category</td>
+                            <td></td>
+                            <td>
+
+                            </td>
+                            
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="categoryview" {% if privileges.categoryview %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="categoryedit" {% if privileges.categoryedit %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="categorydelete"{% if privileges.categorydelete %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="categoryadd" {% if privileges.categoryadd %} checked {% endif %} >
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Roles</td>
+                            <td></td>
+                            <td></td>
+                            
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="rolesview" {% if privileges.rolesview %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="rolesedit" {% if privileges.rolesedit %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Privileges</td>
+                            <td>
+                                
+                            </td>
+                            <td></td>
+                            <td></td>
+                            
+                            <td>
+                                
+                            </td>
+                            <td>
+                                
+                            </td>
+                            <td>
+                                
+                           
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Reports</td>
+                            <td>
+                                
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="reportdownload" {% if privileges.reportdownload %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" name="reportview" {% if privileges.reportview %} checked {% endif %}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td></td>
+                            <td>
+                             
+                            </td>
+                            <td>
+                                
+                            </td>
+                            
+                        </tr>
+
+                    </tbody>
+                </table>
+                <div class="btn">
+                    <button type="submit" class="login-button">SAVE</button>
+
+                </div>
+
+            </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+<script>
+    document.getElementById('settings-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('.left').classList.toggle('show-dropdown');
+        });
+    
+</script>
+
+</html>

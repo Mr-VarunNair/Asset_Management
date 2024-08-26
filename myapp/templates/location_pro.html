@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location list</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-abc123..." crossorigin="anonymous" />
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .left {
+            width: 20%;
+            background-color: #222;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            color: white;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #444;
+        }
+        .user-profile img {
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            margin-right:5px;
+        }
+        .user-profile .username {
+            font-size: 20px;
+            color: white;
+        }
+        .navigation {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .navigation li {
+            margin: 20px 0;
+        }
+        .navigation a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .navigation a:hover {
+            background-color: #444;
+        }
+       
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition-duration: 0.4s;
+            position: absolute;
+            bottom: 10px;
+            width:19.3%
+        }
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+        .right {
+            width: 80%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: auto;
+        }
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .search-container input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .search-container .add-button {
+            padding: 8px 16px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+            
+        }
+        .search-container .add-button:hover {
+            background-color: #0056b3;
+        }
+    
+
+        .table-box {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .table-box h2 {
+            margin-top: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #575d64;
+            color: #ddd;
+        }
+        .edit-icon{
+            color: #201190;
+            cursor: pointer;
+            text-align: center;
+        }
+        .delete-icon {
+            color: #9b0123;
+            cursor: pointer;
+            text-align: center;
+            border:none;
+            text-align: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 1% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            
+        }
+        .form-container {
+            width: 100%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-header {
+            background-color: #6c757d;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-size: 24px;
+        }
+        .form-body {
+            padding: 10px;
+        }
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+           
+        }
+        .form-group label {
+            flex-basis: 20%;
+            padding: 10px 0;
+        }
+        .form-group input, .form-group select {
+            flex-basis: 85%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-buttons button {
+            width: 48%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-buttons .save-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .form-buttons .cancel-button {
+            background-color: #ed1616;
+            color: white;
+        }
+        .reset-btn{
+            background-color: #ed1616;
+            color: white;
+        
+        }
+        .dropdown {
+            display: none;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .dropdown li {
+            margin: 10px 0;
+        }
+        .dropdown a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .dropdown a:hover, .dropdown a:focus {
+            background-color: #444;
+        }
+        .show-dropdown .dropdown {
+            display: block;
+        }
+        .show-dropdown .navigation > li:not(.settings) {
+            display: none;
+        }
+        .show-dropdown .settings {
+            margin-top: 0;
+        }
+        .settings i.dropdown-icon {
+            margin-left: 10px;
+            transition: transform 0.3s;
+        }
+        .show-dropdown .settings i.dropdown-icon {
+            transform: rotate(180deg);
+        }
+
+
+
+
+
+
+
+.editusername, .editpassword {
+            display: block; /* or use inline-block or other as needed */
+            visibility: visible;
+}
+
+
+
+
+ 
+  .close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  dialog{
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    width: 25%;
+}
+dialog::backdrop{
+    background: rgba(0,0,0,0.5);
+}
+.hidden{
+    display: none;
+}
+.button-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 19px;
+    margin-left: 10px;
+}
+.button-container button{
+    text-align: center;
+    padding: 10px 20px;
+    margin: 0 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    transition: background-color 0.3s;
+    
+}
+.button-container button:hover{
+    background-color: #0056b3;
+}
+.pagination-controls {
+    display: flex;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.page-nav {
+    background-color: #444;
+    color: white;
+    border: none;
+    padding: 1px 10px;
+ 
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 8px; 
+}
+
+.page-nav:hover {
+    background-color: #444;
+}
+
+.page-numbers {
+    display: flex;
+}
+
+.page-number {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    
+}
+
+.page-number.active, .page-number:hover {
+    background-color: #444;
+    color: white;
+}
+
+
+       
+
+    </style>
+</head>
+<body>
+    {% if role == 'CISO' %}
+    {% include 'cisonavigation.html' %}
+    {% elif role == 'Fnhead' %}
+    {% include 'fnheadnavigation.html' %}
+    {% elif role == 'SystemAdmin' %}
+    {% include 'systemadminnavigation.html' %}
+    {% elif role == 'AssetOwner' %}
+    {% include 'assetownernavigation.html' %}
+    {% else %}
+    {% include 'adminnavigation.html' %}
+    {% endif %}
+    <div class="right">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search by Location..." aria-label="Search">
+            {% if show_add_button %}<button class="add-button" aria-label="Add Loc" id="addLocationBtn"><i class="fas fa-plus"></i> Add</button>{% endif %}
+        </div>
+       
+    
+        <div class="table-box">
+            <h2>LOCATIONS</h2>
+            <div class="table-container">
+                <div>
+                    <label for="show-entries">Show entries:</label>
+                    <select id="show-entries" >
+                        <option value="all">All</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <table id="locationTable" role="table">
+                    <thead>
+                        <tr>
+                            <th>Serial No</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            {% if show_edit_icon %}<th>Edit</th>{% endif %}
+                            {% if show_delete_icon %}<th>Delete</th>{% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for location in users %}  
+                       <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{location.location}}</td>
+                        <td>{{location.loc_status}}</td>
+                     
+                        {% if show_edit_icon %} <td>
+                            <a class="edit-icon" data-id="{{location.id}}"><i class="fas fa-edit"></i></a>
+                    
+                        </td>{% endif %}
+                        {% if show_delete_icon %} <td>
+                            <form action="{% url 'delete_loc' location.id %}" method="post">
+                                {% csrf_token %}
+                               <button type="submit" class="delete-icon"><i class="fas fa-trash"></i></button>
+                        </form>    
+                        </td>{% endif %}
+                        </tr>
+                        
+                        {% endfor %}
+                    </tbody>
+                    
+                </table>
+                <div class="pagination-controls">
+                    <button id="prevPage" class="page-nav" aria-label="Previous Page">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div id="pageNumbers" class="page-numbers"></div>
+                    <button id="nextPage" class="page-nav" aria-label="Next Page">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div id ="noResultsMessage" style="display: none; text-align: center;" ><h3>NO RECORDS FOUND</h3></div>
+            </div>
+            <dialog id="confirmDialog">
+                <form method="dialog">
+                    <p>Are you sure you want to delete this location?</p>
+                <div class="button-container">
+                    <button value="yes">Yes</button>
+                    <button value="no">No</button>
+                </div>
+                </form>
+            </dialog>   
+        </div>
+    </div>
+   
+
+<!-- The Modal -->
+<div id="addLocationModal" class="modal">
+    <div class="modal-content">
+        <div class="form-container">        
+            <div class="form-header" id="form-header">
+                ADD LOCATION
+            </div>
+            <div class="form-body">
+                <form id="addLocationForm" method="POST" enctype="multipart/form-data" action="{% url 'add_location' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="location">Location:</label>
+                        <input  type="text" required id="location" name="location" placeholder="location"><br>
+                    </div>
+                    <div class="form-group">
+                        <label for="status" >Status:</label>
+                        <select id="active" required  name="loc_status">
+                            <option value="" disabled selected>--Select--</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                        </div>
+                    <div id="addLocationError" class="error-message" style="color: red; display: none; text-align: center;padding-bottom: 20px;"></div>
+                    <div class="form-buttons">
+                        <button class="save-btn" type="submit">Save</button>
+                        <button type="button" class="reset-btn" onclick="closeModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+  
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="form-container">
+            <div class="form-header" id="formHeader">
+                Edit Location
+            </div>
+            <div class="form-body">
+                <!-- Form for Editing Category -->
+                <form id="editLocationForm" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" id="editLocationId" name="id">
+                    <div class="form-group">
+                        <label for="editlocationType">Location</label>
+                        <input type="text" id="editlocationType" name="location">
+                    </div>
+                    <div class="form-group">
+                        <label for="editlocationStatus">Status</label>
+                        <select  id="editlocationStatus" name="loc_status" required>
+                            <option value=""disabled selected>--Select--</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div id="editLocationError" class="error-message" style="color:red;display:none; text-align: center;padding-bottom: 20px;"></div>
+                    <div class="form-buttons">
+                        <button type="submit" class="save-btn">Save</button>
+                        <button type="button"  class="reset-btn" onclick="closeEditModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+  </div>
+<script>
+    
+    document.addEventListener('DOMContentLoaded', function() {
+    const addLocationBtn = document.getElementById('addLocationBtn');
+    const locModal = document.getElementById('addLocationModal');
+    const editModal = document.getElementById('editModal');
+    const editIcons = document.querySelectorAll('.edit-icon');
+    const editLocationForm = document.getElementById('editLocationForm');
+    const editlocationType = document.getElementById('editlocationType');
+    const editlocationStatus = document.getElementById('editlocationStatus');
+    const resetFormBtn = document.getElementById('resetAddFormBtn');
+    const settingsLink = document.getElementById('settings-link');
+    const searchInput = document.getElementById('searchInput');
+    const addForm = document.getElementById('addLocationForm');
+    const addLocationError = document.getElementById('addLocationError'); // Ensure this is defined
+    const editLocationError = document.getElementById('editLocationError'); // Ensure this is defined
+    const editLocationId = document.getElementById('editLocationId'); // Ensure this is defined
+
+      // Function to check for duplicate departments
+      function checkDuplicateLocation(locationName, excludeId) {
+        const rows = document.querySelectorAll('#locationTable tbody tr');
+        for (const row of rows) {
+            const existingLocation = row.cells[1].textContent.trim();
+            const locationId = row.querySelector('.edit-icon')?.getAttribute('data-id');
+            if (existingLocation.toLowerCase() === locationName.toLowerCase() && locationId !== excludeId) {
+                return true; // Duplicate found
+            }
+        }
+        return false; // No duplicate found
+    }
+
+    // Handle editing of location
+    editLocationForm.addEventListener('submit', function(event) {
+        const locationName = document.getElementById('editlocationType').value.trim();
+        const locationId = document.getElementById('editLocationId').value;
+        if (checkDuplicateLocation(locationName, locationId)) {
+            event.preventDefault();
+            editLocationError.textContent = 'Location already exists!';
+            editLocationError.style.display = 'block';
+        } else {
+            editLocationError.textContent = '';
+            editLocationError.style.display = 'none';
+        }
+    });
+    addLocationForm.addEventListener('submit', function(event) {
+        const locationName = document.getElementById('location').value.trim();
+        if (checkDuplicateLocation(locationName)) {
+            event.preventDefault();
+            addLocationError.textContent = 'Location already exists!';
+            addLocationError.style.display = 'block';
+        } else {
+            addLocationError.textContent = '';
+            addLocationError.style.display = 'none';
+        }
+    });
+
+    // Search functionality
+    searchInput.addEventListener('input', function() {
+        const filter = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#locationTable tbody tr');
+        let hasResults = false;
+
+        rows.forEach(row => {
+            const locationType = row.cells[1].textContent.toLowerCase();
+            if (locationType.includes(filter)) {
+                row.style.display = '';
+                hasResults = true;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        const noResultsMessage = document.getElementById('noResultsMessage');
+        if (hasResults) {
+            noResultsMessage.style.display = 'none';
+        } else {
+            noResultsMessage.style.display = 'block';
+        }
+    });
+
+    // Add click event listener to the settings link
+    settingsLink.addEventListener('click', function(event) {
+        event.preventDefault();
+        const settingsDropdown = document.getElementById('settings-dropdown');
+        settingsDropdown.classList.toggle('show');
+    });
+
+    // Add click event listener to the Add Location button
+    addLocationBtn.addEventListener('click', function() {
+        addForm.reset();
+        locModal.style.display = 'block';
+    });
+
+    // Function to close the modal
+    function closeModal() {
+        locModal.style.display = 'none';
+        addLocationError.textContent = '';
+        addLocationError.style.display = 'none';
+    }
+
+    // Add event listener to the cancel button in the add modal
+    document.querySelector('.reset-btn').addEventListener('click', function() {
+        closeModal();
+    });
+
+    // Close the modal if the user clicks outside of it
+    window.addEventListener('click', function(event) {
+        if (event.target === locModal) {
+            closeModal();
+        }
+    });
+
+    function closeEditModal() {
+        editModal.style.display = 'none';
+        editLocationError.textContent = '';
+        editLocationError.style.display = 'none';
+    }
+
+    editIcons.forEach(icon => {
+        icon.addEventListener('click', function() {
+            const locationId = this.getAttribute('data-id');
+            const row = this.parentElement.parentElement;
+            const location = row.querySelector('td:nth-child(2)').textContent.trim();
+            const status = row.querySelector('td:nth-child(3)').textContent.trim();
+
+            editlocationType.value = location;
+            editlocationStatus.value = status;
+            editLocationId.value = locationId;  // Set the hidden input field for the location ID
+            editLocationForm.action = `/location_list/edit/${locationId}/`; // Ensure the action URL is correct
+
+            editModal.style.display = 'block';
+        });
+    });
+
+    settingsLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector('.left').classList.toggle('show-dropdown');
+    });
+
+    const cancelButton = editLocationForm.querySelector('.reset-btn');
+    cancelButton.addEventListener('click', function() {
+        closeEditModal();
+    });
+
+// Delete button functionality
+const deleteButtons = document.querySelectorAll('.delete-icon');
+const dialog = document.getElementById('confirmDialog');
+
+deleteButtons.forEach(button => {
+    button.addEventListener('click', function(event) {
+        event.preventDefault();
+        const form = button.closest('form');
+
+        // Open the dialog
+        dialog.showModal();
+
+        // Handle dialog closing
+        dialog.addEventListener('close', function() {
+            if (dialog.returnValue === 'yes') {
+                form.submit(); // Submit the form if 'yes' is selected
+            }
+        }, { once: true });
+    });
+});
+
+// Handle clicking outside dialog to close
+dialog.addEventListener('click', function(event) {
+    if (event.target === dialog) {
+        dialog.close('no'); // Close dialog if clicked outside
+    }
+});
+
+// Handle clicking on 'No' button to close dialog
+dialog.querySelectorAll('button').forEach(button => {
+    button.addEventListener('click', function() {
+        dialog.close(button.value);
+    });
+});
+
+// Pagination functionality
+const showEntriesDropdown = document.getElementById('show-entries');
+const rows = Array.from(document.querySelectorAll('#locationTable tbody tr'));
+const pageNumbersContainer = document.getElementById('pageNumbers');
+const [prevPageButton, nextPageButton] = [document.getElementById('prevPage'), document.getElementById('nextPage')];
+
+let rowsPerPage = 15, currentPage = 1;
+
+const updateEntries = value => {
+    if (value === 'all') {
+        rowsPerPage = rows.length;  // Display all rows
+        currentPage = 1;
+    } else {
+        rowsPerPage = parseInt(value, 10) || 15;  // Default to 15 if value is invalid
+        currentPage = Math.min(Math.max(currentPage, 1), Math.ceil(rows.length / rowsPerPage));
+    }
+    rows.forEach((row, index) => row.style.display = (index >= (currentPage - 1) * rowsPerPage && index < currentPage * rowsPerPage) ? '' : 'none');
+    renderPagination(Math.ceil(rows.length / rowsPerPage));
+};
+
+const renderPagination = totalPages => {
+    pageNumbersContainer.innerHTML = '';
+    for (let i = 1; i <= totalPages; i++) {
+        const pageNumber = document.createElement('button');
+        pageNumber.textContent = i;
+        pageNumber.className = 'page-number';
+        if (i === currentPage) pageNumber.classList.add('active');
+        pageNumber.onclick = () => { currentPage = i; updateEntries(showEntriesDropdown.value); };
+        pageNumbersContainer.appendChild(pageNumber);
+    }
+    prevPageButton.disabled = currentPage === 1;
+    nextPageButton.disabled = currentPage === totalPages;
+};
+
+const changePage = offset => { currentPage = Math.min(Math.max(currentPage + offset, 1), Math.ceil(rows.length / rowsPerPage)); updateEntries(showEntriesDropdown.value); };
+
+prevPageButton.onclick = () => changePage(-1);
+nextPageButton.onclick = () => changePage(1);
+showEntriesDropdown.addEventListener('change', () => updateEntries(showEntriesDropdown.value));
+
+showEntriesDropdown.value = '15';
+updateEntries('15');
+});
+
+                
+
+</script>
+</body>
+</html>

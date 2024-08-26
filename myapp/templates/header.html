@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{% static '/css/header.css' %}">
+</head>
+<body>
+    <div class="navbar">
+        <a href="jp.html" class="{% if request.resolver_match.url_name == 'property_login' %}active{% endif %}">Property Management</a>
+        <a href="jp.html" class="{% if request.resolver_match.url_name == 'amc_login' %}active{% endif %}">AMC Management</a>
+        <a href="jp.html"class="{% if request.resolver_match.url_name == 'store_login' %}active{% endif %}" >Store Management</a>
+        <a href="jp.html" class="{% if request.resolver_match.url_name == 'reminder_login' %}active{% endif %}">Reminder Schedule for Contract</a>
+        <a href="jp.html" class="{% if request.resolver_match.url_name == 'vehicle_login' %}active{% endif %}">Vehicle Management</a>
+        <a href="{% url 'asset_login' %}" class="{% if request.resolver_match.url_name == 'asset_login' %}active{% endif %}">Asset Management</a>
+        <a href="jp.html" class="{% if request.resolver_match.url_name == 'buildig_login' %}active{% endif %}">Building Maintenance</a>
+        <a href="jp.html" class="{% if request.resolver_match.url_name == 'iso_login' %}active{% endif %}">ISO Management</a>
+        <a href="jp.html" class="{% if request.resolver_match.url_name == 'house_login' %}active{% endif %}">House Keeping Management</a>
+        <a href="jp.html" class="{% if request.resolver_match.url_name == 'purchase_login' %}active{% endif %}">Purchase Management</a>
+        <a href="jp.html"class="{% if request.resolver_match.url_name == 'tax_login' %}active{% endif %}" >Tax/Building Property</a>
+        <a href="jp.html" class="{% if request.resolver_match.url_name == 'tenant_login' %}active{% endif %}">Tenant/Contract Management</a>
+    </div>     
+</body>
+</html>

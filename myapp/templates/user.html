@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-abc123..." crossorigin="anonymous" />
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .left {
+            width: 20%;
+            background-color: #222;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            color: white;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #444;
+        }
+        .user-profile img {
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            margin-right:5px;
+        }
+        .user-profile .username {
+            font-size: 20px;
+            color: white;
+        }
+        .navigation {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .navigation li {
+            margin: 20px 0;
+        }
+        .navigation a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .navigation a:hover {
+            background-color: #444;
+        }
+        
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition-duration: 0.4s;
+            position: absolute;
+            bottom: 10px;
+            width:19.3%
+        }
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+        .right {
+            width: 80%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: auto;
+        }
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .search-container input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .search-container .add-button {
+            padding: 8px 16px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+        }
+        .search-container .add-button:hover {
+            background-color: #0056b3;
+        }
+        .table-box {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+        
+        }
+        .table-box h2 {
+            margin-top: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        .table-container {
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #575d64;
+            color: #ddd;
+        }
+         .delete-icon {
+            background: none;
+            border: none;  
+            cursor: pointer;
+            color:#f44336;
+            text-align: center;
+        }
+        .edit-icon {
+            cursor: pointer;
+            color: #007bff;
+            text-align: center;
+            
+        
+            
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 1% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            position: relative;
+        }
+        .form-container {
+            width: 100%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-header {
+            background-color: #6c757d;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-size: 24px;
+        }
+        .form-body {
+            padding: 10px;
+        }
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .form-group label {
+            flex-basis: 20%;
+            padding: 10px 0;
+        }
+        .form-group input, .form-group select {
+            flex-basis: 75%; 
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%; 
+    box-sizing: border-box;
+        }
+        
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-buttons button {
+            width: 48%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-buttons .save-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .form-buttons .reset-btn {
+            background-color:#f44336;
+            color: white;
+        }
+        .dropdown {
+            display: none;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .dropdown li {
+            margin: 10px 0;
+        }
+        .dropdown a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .dropdown a:hover, .dropdown a:focus {
+            background-color: #444;
+        }
+        .show-dropdown .dropdown {
+            display: block;
+        }
+        .show-dropdown .navigation > li:not(.settings) {
+            display: none;
+        }
+        .show-dropdown .settings {
+            margin-top: 0;
+        }
+        .settings i.dropdown-icon {
+            margin-left: 10px;
+            transition: transform 0.3s;
+        }
+        .show-dropdown .settings i.dropdown-icon {
+            transform: rotate(180deg);
+        }
+        .close-icon {
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-icon:hover,
+.close-icon:focus {
+    color: red;
+    text-decoration: none;
+    cursor: pointer;
+}
+dialog {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 25%;
+        }
+        dialog::backdrop {
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .hidden {
+            display: none;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px; /* Adjust spacing */
+        }
+
+       .button-container button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+        .pagination-controls {
+    display: flex;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.page-nav {
+    background-color: #444;
+    color: white;
+    border: none;
+    padding: 1px 10px;
+ 
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 8px; 
+}
+
+.page-nav:hover {
+    background-color: #444;
+}
+
+.page-numbers {
+    display: flex;
+}
+
+.page-number {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    
+}
+
+.page-number.active, .page-number:hover {
+    background-color: #444;
+    color: white;
+}
+.input-container {
+    position: relative;
+    width: 100%;
+    flex-basis: 75%;
+}
+
+.password-error-message {
+    color: red;
+    font-size: 0.875em;
+    margin-top: 0.25em; /* Space between input field and error message */
+    display: none; /* Hidden by default */
+}
+
+.error-message {
+    color: red;
+    display: none;
+    font-size: 0.875em; /* Adjust font size as needed */
+    margin-top: 0.45em; /* Space between input field and error message */
+    position: absolute;
+    left: 10em;
+    bottom: -0.5em; /* Adjust position to place it just below the input field */
+    
+}
+    </style>
+</head>
+<body>
+    {% if role == 'CISO' %}
+    {% include 'cisonavigation.html' %}
+    {% elif role == 'Fnhead' %}
+    {% include 'fnheadnavigation.html' %}
+    {% elif role == 'SystemAdmin' %}
+    {% include 'systemadminnavigation.html' %}
+    {% elif role == 'AssetOwner' %}
+    {% include 'assetownernavigation.html' %}
+    {% else %}
+    {% include 'adminnavigation.html' %}
+    {% endif %}
+    <div class="right">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search by Name..." aria-label="Search">
+            {% if show_add_button %} <button class="add-button" aria-label="Add User" id="addUserButton"><i class="fas fa-plus"></i> Add</button>{% endif %}
+        </div>
+        <div class="content">
+            
+        <div class="table-box">
+            <h2>USERS</h2>
+            <div class="table-container">
+                <div>
+                    <label for="show-entries">Show entries:</label>
+                    <select id="show-entries" >
+                        <option value="all">All</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                
+                <table id="userTable" role="table">
+                    <thead>
+                        <tr>
+                            <th>Sl.No</th>
+                            <th>Name</th>
+                            <th>PhoneNumber</th>
+                            <th>Email Id</th>
+                            <th>Location</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th>Role</th>
+                            {% if show_edit_icon %} <th>Edit</th>{% endif %}
+                            {% if show_delete_icon %}<th>Delete</th>{% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for UserTable in users %}
+                        <tr data-username="{{ UserTable.username }}" data-password="{{ UserTable.password }}"  data-id="{{ UserTable.id }}">
+                            <td>{{forloop.counter}}</td>
+                            <td>{{UserTable.name}}</td>
+                            <td>{{UserTable.phone_no}}</td>
+                            <td>{{UserTable.email}}</td>
+                            <td>{{UserTable.location}}</td>
+                            <td>{{UserTable.department}}</td>
+                            <td>{{UserTable.status}}</td>
+                            <td>{{UserTable.role}}</td>
+                            {% if show_edit_icon %}<td class="edit-icon" data-id="{{ UserTable.id }}">
+                                <i class="fas fa-edit"></i>
+                            </td>{% endif %}
+                            {% if show_delete_icon %}
+                                <td>
+                                <form action="{% url 'delete_user' UserTable.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="delete-icon"><i class="fas fa-trash-alt"></i></button>
+                                </form>
+                            
+                            </td>{% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="pagination-controls">
+                    <button id="prevPage" class="page-nav" aria-label="Previous Page">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div id="pageNumbers" class="page-numbers"></div>
+                    <button id="nextPage" class="page-nav" aria-label="Next Page">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div id="noResultsMessage" style="display: none;text-align: center;"><h3>No Records Found</h3></div>
+            </div>
+        </div>
+        <dialog id="confirmDialog">
+            <form method="dialog">
+                <p>Are you sure you want to delete this user?</p>
+            <div class="button-container">
+                <button value="yes">Yes</button>
+                <button value="no">No</button>
+            </div>
+            </form>
+        </dialog>
+    </div>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close-icon"></span>
+            <div class="form-container">
+                <div class="form-header">
+                    Add User
+                </div>
+                <div class="form-body">
+                    <form id="userForm" method="post" action="{% url 'save_user' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" placeholder="Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone_no">Phone Number</label>
+                            <input type="text" id="phone_no" name="phone_no" placeholder="Phone Number" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Id</label>
+                            <input type="email" id="email" name="email" placeholder="Email Id" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Location</label>
+                            <select id="location" name="location" required>
+                                <option value="" disabled selected>select</option>
+                                {% for location in locations %}
+                                <option value="{{ location.location }}">{{ location.location }}</option>
+                              {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="department">Department</label>
+                            <select id="department" name="department" required>
+                                <option value="" disabled selected>select the department</option>
+                                {% for department in departments %}
+                                  <option value="{{ department.department }}">{{ department.department }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="role">Role</label>
+                            <select id="role" name="role" required>
+                                <option value="" disabled selected>choose the role</option>
+                                <option value="Admin">Admin</option>
+                                <option value="CISO">CISO</option>
+                                <option value="Fnhead">Functional Head</option>
+                                <option value="SystemAdmin">System Admin</option>
+                                <option value="AssetOwner">Asset Owner</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select id="status" name="status" required>
+                            <option value="" disabled selected>select status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" placeholder="Username" required>
+                            
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" placeholder="Password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm Password</label>
+                            <div class="input-container">
+                                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+                                <div id="password_error" class="password-error-message">Passwords does not match.</div>
+                            </div>
+                            <div id="usernameError" class="error-message"></div>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="submit" class="save-btn">Save</button>
+                            <button type="button" class="reset-btn">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="form-container">
+                <div class="form-header">
+                    Edit User
+                </div>
+                <div class="form-body">
+                    <form id="editUserForm" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" id="editUserId" name="id">
+                        <div class="form-group">
+                            <label for="editName">Name</label>
+                            <input type="text" id="editName" name="name" placeholder="Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPhone">Phone Number</label>
+                            <input type="text" id="editPhone"name="phone_no" placeholder="Phone Number" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmail">Email Id</label>
+                            <input type="email" id="editEmail" name="email" placeholder="Email Id" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editLocation">Location</label>
+                            <select id="editLocation" name="location" required>
+                                <option value="" disabled selected>select</option>
+                                {% for location in locations %}
+                                <option value="{{ location.location }}">{{ location.location }}</option>
+                              {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editDepartment">Department</label>
+                            <select id="editDepartment" name="department" required>
+                                <option value="" disabled selected>select the department</option>
+                                {% for department in departments %}
+                                  <option value="{{ department.department }}">{{ department.department }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editRole">Role</label>
+                            <select id="editRole" name="role" required>
+                                <option value="" disabled selected>choose the role</option>
+                                <option value="Admin">Admin</option>
+                                <option value="CISO">CISO</option>
+                                <option value="Fnhead">Functional Head</option>
+                                <option value="SystemAdmin">System Admin</option>
+                                <option value="AssetOwner">Asset Owner</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editStatus">Status</label>
+                            <select id="editStatus" name="status" required>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editusername">Username</label>
+                            <input type="text" id="editusername" name="username" placeholder="Username" required>
+                           
+                        </div>
+                        <div class="form-group">
+                            <label for="editpassword">Password</label>
+                            <input type="password" id="editpassword" name="password" placeholder="Password" required >
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm Password</label>
+                            <div class="input-container">
+                                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+                                <div id="edit_password_error" class="password-error-message">Passwords does not match.</div>
+                            </div>
+                            <div id="editUsernameError" class="error-message"></div>
+                        </div>
+                        
+                        <div class="form-buttons">
+                            <button type="submit" class="save-btn">Save</button>
+                            <button type="button" class="reset-btn">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    // Elements
+    const searchInput = document.getElementById('searchInput');
+    const userTableRows = Array.from(document.querySelectorAll('#userTable tbody tr'));
+    const modal = document.getElementById('myModal');
+    const addUserButton = document.getElementById('addUserButton');
+    const userForm = document.getElementById('userForm');
+    const editModal = document.getElementById('editModal');
+    const editUserForm = document.getElementById('editUserForm');
+    const deleteButtons = document.querySelectorAll('.delete-icon');
+    const dialog = document.getElementById('confirmDialog');
+    const showEntriesDropdown = document.getElementById('show-entries');
+    const pageNumbersContainer = document.getElementById('pageNumbers');
+    const prevPageButton = document.getElementById('prevPage');
+    const nextPageButton = document.getElementById('nextPage');
+    const noResultsMessage = document.getElementById('noResultsMessage');
+    const usernameError = document.getElementById('usernameError');
+    const editUsernameError = document.getElementById('editUsernameError');
+
+    let rowsPerPage = 15, currentPage = 1;
+
+    // Function to clear error messages
+    function clearErrors(form) {
+        form.querySelector('.error-message').textContent = '';
+        form.querySelector('.error-message').style.display = 'none';
+        form.querySelector('.password-error-message').style.display = 'none';
+    }
+
+    // Function to clear form fields
+    function clearFormFields(form) {
+        form.reset();
+        form.querySelectorAll('input[type="password"]').forEach(input => input.value = '');
+    }
+
+    // Search input event
+    searchInput.addEventListener('input', function() {
+        const filter = this.value.toLowerCase();
+        let hasResults = false;
+
+        userTableRows.forEach(row => {
+            const userType = row.cells[1].textContent.toLowerCase();
+            if (userType.includes(filter)) {
+                row.style.display = '';
+                hasResults = true;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        noResultsMessage.style.display = hasResults ? 'none' : 'block';
+    });
+
+    // Add user button click event
+    addUserButton.addEventListener('click', function() {
+        clearErrors(userForm);  
+        modal.style.display = 'block';
+    });
+
+    // Reset button event for user form
+    userForm.querySelector('.reset-btn').addEventListener('click', function() {
+        clearErrors(userForm);
+        clearFormFields(userForm);
+    });
+
+    // Edit icons event
+    document.querySelectorAll('.edit-icon').forEach(icon => {
+        icon.addEventListener('click', function() {
+            const userId = this.getAttribute('data-id');
+            const row = this.closest('tr');
+            const name = row.querySelector('td:nth-child(2)').textContent.trim();
+            const phone = row.querySelector('td:nth-child(3)').textContent.trim();
+            const email = row.querySelector('td:nth-child(4)').textContent.trim();
+            const location = row.querySelector('td:nth-child(5)').textContent.trim();
+            const department = row.querySelector('td:nth-child(6)').textContent.trim();
+            const status = row.querySelector('td:nth-child(7)').textContent.trim();
+            const role = row.querySelector('td:nth-child(8)').textContent.trim();
+            const username = row.getAttribute('data-username');
+            const password = row.getAttribute('data-password');
+
+            // Populate edit form fields
+            editUserForm.querySelector('#editUserId').value = userId;
+            editUserForm.querySelector('#editName').value = name;
+            editUserForm.querySelector('#editPhone').value = phone;
+            editUserForm.querySelector('#editEmail').value = email;
+            editUserForm.querySelector('#editLocation').value = location;
+            editUserForm.querySelector('#editDepartment').value = department;
+            editUserForm.querySelector('#editRole').value = role;
+            editUserForm.querySelector('#editStatus').value = status;
+            editUserForm.querySelector('#editusername').value = username;
+            editUserForm.querySelector('#editpassword').value = password;
+
+            editUserForm.action = `/edit_user/${userId}/`;
+
+            // Show the edit modal
+            clearErrors(editUserForm);
+            editModal.style.display = 'block';
+        });
+    });
+
+    // Close modals
+    function closeModal(modal, form) {
+        modal.style.display = 'none';
+        if (form) {
+            clearFormFields(form);
+        }
+    }
+
+    userForm.querySelector('.reset-btn').addEventListener('click', function() {
+        closeModal(modal, userForm);
+    });
+
+    editUserForm.querySelector('.reset-btn').addEventListener('click', function() {
+        closeModal(editModal, editUserForm);
+    });
+
+    // Delete buttons event
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            const form = button.closest('form');
+            dialog.showModal();
+
+            dialog.addEventListener('close', function() {
+                if (dialog.returnValue === 'yes') {
+                    form.submit();
+                }
+            }, { once: true });
+        });
+    });
+
+    // Handle dialog clicking outside to close
+    dialog.addEventListener('click', function(event) {
+        if (event.target === dialog) {
+            dialog.close('no');
+        }
+    });
+
+    // Handle dialog button clicks
+    dialog.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', function() {
+            dialog.close(button.value);
+        });
+    });
+
+    // Pagination functionality
+    const updateEntries = value => {
+        if (value === 'all') {
+            rowsPerPage = userTableRows.length;
+            currentPage = 1;
+        } else {
+            rowsPerPage = parseInt(value, 10) || 15;
+            currentPage = Math.min(Math.max(currentPage, 1), Math.ceil(userTableRows.length / rowsPerPage));
+        }
+        userTableRows.forEach((row, index) => row.style.display = (index >= (currentPage - 1) * rowsPerPage && index < currentPage * rowsPerPage) ? '' : 'none');
+        renderPagination(Math.ceil(userTableRows.length / rowsPerPage));
+    };
+
+    const renderPagination = totalPages => {
+        pageNumbersContainer.innerHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+            const pageNumber = document.createElement('button');
+            pageNumber.textContent = i;
+            pageNumber.className = 'page-number';
+            if (i === currentPage) pageNumber.classList.add('active');
+            pageNumber.onclick = () => { currentPage = i; updateEntries(showEntriesDropdown.value); };
+            pageNumbersContainer.appendChild(pageNumber);
+        }
+        prevPageButton.disabled = currentPage === 1;
+        nextPageButton.disabled = currentPage === totalPages;
+    };
+
+    const changePage = offset => { currentPage = Math.min(Math.max(currentPage + offset, 1), Math.ceil(userTableRows.length / rowsPerPage)); updateEntries(showEntriesDropdown.value); };
+
+    prevPageButton.onclick = () => changePage(-1);
+    nextPageButton.onclick = () => changePage(1);
+    showEntriesDropdown.addEventListener('change', () => updateEntries(showEntriesDropdown.value));
+
+    showEntriesDropdown.value = '15';
+    updateEntries('15');
+
+    // Password validation function
+    function validatePasswords(form) {
+        const password = form.querySelector('[name="password"]').value;
+        const confirmPassword = form.querySelector('[name="confirm_password"]').value;
+        const errorDiv = form.querySelector('.password-error-message');
+
+        if (password !== confirmPassword) {
+            errorDiv.style.display = 'block';
+            return false;
+        } else {
+            errorDiv.style.display = 'none';
+            return true;
+        }
+    }
+
+    // Attach event listeners for form submission
+    userForm.addEventListener('submit', function(event) {
+        if (!validatePasswords(userForm) || usernameError.style.display === 'block') {
+            event.preventDefault();
+        }
+    });
+
+    editUserForm.addEventListener('submit', function(event) {
+        if (!validatePasswords(editUserForm) || editUsernameError.style.display === 'block') {
+            event.preventDefault();
+        }
+    });
+
+    // Validate username function
+    function validateUsername(inputField, errorDiv, currentUserId = null) {
+        const inputUsername = inputField.value.trim();
+        let usernameExists = false;
+
+        userTableRows.forEach(row => {
+            const existingUsername = row.getAttribute('data-username');
+            const userId = row.getAttribute('data-id');
+            if (existingUsername === inputUsername && userId !== currentUserId) {
+                usernameExists = true;
+            }
+        });
+
+        if (usernameExists) {
+            errorDiv.textContent = 'Username already exists';
+            errorDiv.style.display = 'block';
+        } else {
+            errorDiv.style.display = 'none';
+        }
+    }
+
+    // Validate username on input for user form
+    userForm.querySelector('#username').addEventListener('input', function() {
+        validateUsername(this, usernameError);
+    });
+
+    // Validate username on input for edit user form
+    editUserForm.querySelector('#editusername').addEventListener('input', function() {
+        validateUsername(this, editUsernameError, editUserForm.querySelector('#editUserId').value);
+    });
+});
+
+     // Settings link event
+     document.getElementById('settings-link').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector('.left').classList.toggle('show-dropdown');
+    });
+
+
+    
+
+
+    </script>
+    
+
+    
+</body>
+</html>

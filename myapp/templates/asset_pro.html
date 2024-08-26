@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-abc123..." crossorigin="anonymous" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .left {
+            width: 20%;
+            background-color: #222;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            color: white;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #444;
+        }
+        .user-profile img {
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            margin-right:5px;
+        }
+        .user-profile .username {
+            font-size: 20px;
+            color: white;
+        }
+        .navigation {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .navigation li {
+            margin: 20px 0;
+        }
+        .navigation a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .navigation a:hover {
+            background-color: #444;
+        }
+       
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition-duration: 0.4s;
+            position: absolute;
+            bottom: 10px;
+            width:19.3%
+        }
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+        .right {
+            width: 80%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: auto;
+        }
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .search-container input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .search-container .add-button {
+            padding: 8px 16px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+        }
+        .search-container .add-button:hover {
+            background-color: #0056b3;
+        }
+        .table-box {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .table-box h2 {
+            margin-top: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #575d64;
+            color: #ddd;
+        }
+        .view-icon{
+            color: #1f04e6;
+            cursor: pointer;
+            text-align: center;
+        }
+        .edit-icon{
+            color: #1f04e6;
+            cursor: pointer;
+            text-align: center;
+        }
+        .delete-icon {
+            color: #db0739;
+            cursor: pointer;
+            text-align: center;
+            border:none;
+        }
+
+        .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+        .modal-content {
+            background-color: #fefefe;
+            margin: 1% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 1200px;
+            border-radius: 8px;
+        }
+        .form-container {
+    width: 100%;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.form-header {
+    background-color: #6c757d;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    font-size: 24px;
+}
+.form-body {
+    padding: 20px;
+    display: block;
+    flex-wrap: wrap;
+    gap: 15px; /* Space between form groups */
+}
+.form-group {
+    display: flex;
+    align-items: center;
+    flex: 1 1 calc(50% - 15px); /* Adjust width and spacing */
+    margin-bottom: 1.5em; /* Adjust spacing as needed */
+    position: relative; /* Ensure positioning context for error-message */
+}
+.form-group label {
+    width: 40%; /* Adjust label width as needed */
+    
+}
+        
+        .form-group input, .form-group select {
+        
+            width: 50%;
+            padding: 10px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+
+        form {
+    display: flex;
+    flex-wrap: wrap;
+    
+}
+
+
+.form-buttons {
+    display: flex;
+    justify-content: space-between; /* Distributes buttons to opposite ends */
+    flex: 1 1 100%;
+    margin-top: 20px; /* Optional: Add margin to separate buttons from form content */
+}
+
+        .form-buttons button {
+            width: 45%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-buttons .save-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .form-buttons .reset-btn {
+            background-color: #e60e32;
+            color: white;
+           
+        }
+        .dropdown {
+            display: none;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .dropdown li {
+            margin: 10px 0;
+        }
+        .dropdown a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .dropdown a:hover, .dropdown a:focus {
+            background-color: #444;
+        }
+        .show-dropdown .dropdown {
+            display: block;
+        }
+        .show-dropdown .navigation > li:not(.settings) {
+            display: none;
+        }
+        .show-dropdown .settings {
+            margin-top: 0;
+        }
+        .settings i.dropdown-icon {
+            margin-left: 10px;
+            transition: transform 0.3s;
+        }
+        .show-dropdown .settings i.dropdown-icon {
+            transform: rotate(180deg);
+        }
+        
+.editusername, .editpassword {
+            display: block; /* or use inline-block or other as needed */
+            visibility: visible;
+}
+dialog{
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    width: 25%;
+}
+dialog::backdrop{
+    background: rgba(0,0,0,0.5);
+}
+.hidden{
+    display: none;
+}
+.button-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 19px;
+    margin-left: 80px;
+}
+.button-container button{
+    text-align: center;
+    padding: 10px 20px;
+    margin: 0 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: -30px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    transition: background-color 0.3s;
+    
+}
+.button-container button:hover{
+    background-color: #0056b3;
+}
+.pagination-controls {
+    display: flex;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.page-nav {
+    background-color: #444;
+    color: white;
+    border: none;
+    padding: 1px 10px;
+ 
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 8px; 
+}
+
+.page-nav:hover {
+    background-color: #444;
+}
+
+.page-numbers {
+    display: flex;
+}
+
+.page-number {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    
+}
+
+.page-number.active, .page-number:hover {
+    background-color: #444;
+    color: white;
+}
+
+.task-icon i {
+    cursor: pointer; /* or 'pointer' if you prefer */
+    text-align: center;
+    color: #000000;
+}
+
+/* Apply palm cursor to the History icon as well, if needed */
+.history-icon i {
+    cursor: pointer; /* or 'pointer' if you prefer */
+    text-align: center;
+    border: none;
+    color: green;
+}
+.error-message {
+    color: red;
+    font-size: 0.875em;
+    margin-top: 0.1em; /* Space between input and error message */
+    display: none; /* Hidden by default */
+    position: absolute; /* Position relative to form-group */
+    left: 40%; /* Move message to the right of the input */
+    top: 100%; /* Move message below the input */
+    white-space: nowrap; /* Prevent wrapping */
+    margin-left: 10px; /* Adjust space between input and error message */
+    padding: 5px; /* Optional: add some padding */
+    z-index: 10; /* Ensure message is on top of other elements */
+}
+.history_close{
+    background-color: #e60e32;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+
+
+    </style>
+</head>
+<body>
+    {% if role == 'CISO' %}
+    {% include 'cisonavigation.html' %}
+    {% elif role == 'Fnhead' %}
+    {% include 'fnheadnavigation.html' %}
+    {% elif role == 'SystemAdmin' %}
+    {% include 'systemadminnavigation.html' %}
+    {% elif role == 'AssetOwner' %}
+    {% include 'assetownernavigation.html' %}
+    {% else %}
+    {% include 'adminnavigation.html' %}
+    {% endif %}
+    <div class="right">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search by AssetName..." aria-label="Search">
+            {% if show_add_button %} <button class="add-button" aria-label="Add Asset" id="addUserButton"><i class="fas fa-plus"></i> Add</button>{% endif %}
+        </div>
+        <div class="content">
+        <div class="table-box">
+            <h2>Asset List</h2>
+            <div class="table-container">
+                <div>
+                    <label for="show-entries">Show entries:</label>
+                    <select id="show-entries" >
+                        <option value="all">All</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+               
+                <table id="AssetTable" role="table">
+                    <thead>
+                        <tr>
+                            <th>Sl.No</th>
+                            <th>Asset Name</th>
+                            <th>Asset Type</th>
+                            <th>Status</th>
+                            <th>Item Code</th>
+                            <th>Assigned To</th> 
+                            <th>Images</th>
+                            <th>View</th>
+                            {% if show_edit_icon %} <th>Edit</th>{% endif %}
+                            {% if show_delete_icon %} <th>Delete</th>{% endif %}
+                            <th>Assign/Return</th>
+                            <th>History</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr data-Serial_number="{{user.Serial_number}}" data-Model_number="{{user.Model_number}}" data-Machine="{{user.Machine_OS_configuration}}" data-movable="{{user.Movable_nonmovable}}" 
+                            data-vendor="{{user.Vender_Supplier}}" data-Maintenance="{{user.Maintenance}}" data-price="{{user.price}}" data-year_of_purchase="{{user.Year_of_purchasing|date:'Y-m-d'}}" data-year_of_expiry="{{user.Year_of_expiry|date:'Y-m-d'}}" data-age_life="{{user.Age_life}}" data-notes="{{user.Notes}}"
+                            >
+                            <td>{{forloop.counter}}</td>
+                            <td>{{user.Asset_name}}</td>
+                            <td>{{user.Asset_type}}</td>
+                            <td>{{user.Status}}</td>
+                            <td>{{user.Item_code}}</td>
+                            <td>
+                                {% with user.assign_set.last as latest_assignment %}
+                                    {% if latest_assignment %}
+                                        {% if latest_assignment.end_date %}
+                                            Not Assigned
+                                        {% else %}
+                                            {{ latest_assignment.assigned_to }}  <!-- Display employee name -->
+                                        {% endif %}
+                                    {% else %}
+                                        Not Assigned
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                {% if user.images and user.images.url %}
+                                    <img src="{{ user.images.url }}" alt="{{ user.Asset_name }}" width="100">
+                                {% else %}
+                                    <!-- Provide a placeholder or alternative content if no image exists -->
+                                    No Image Available
+                                {% endif %}
+                            </td>
+
+                            <td class="view-icon">
+                                <a href="{% url 'view_asset' user.id %}">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+
+                            {% if show_edit_icon %}<td class="edit-icon">
+                                <i class="fas fa-edit" data-id="{{ user.id }}"  id="edit-button"></i>
+                            </td>{% endif %}
+                            {% if show_delete_icon %}<td>
+                                <form action="{% url 'delete_asset' user.id %}" method="post" >
+                                    {% csrf_token %}
+                                    <button type="submit" class="delete-icon"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </td>{% endif %}
+                            <td class="task-icon">
+                                <i class="fas fa-tasks" data-id="{{ user.id }}"></i>
+                            </td>
+                            <td class="history-icon">
+                                <i class="fas fa-history" onclick="showHistoryModal('{{ user.Serial_number }}')"></i>
+                            </td>
+                        </tr>
+                        {% for assignment in user.assign_set.all %}
+                        <tr id="history-{{ user.Serial_number }}" data-history="true"
+                            data-assigned_to="{{ assignment.assigned_to }}"
+                            data-assigned_by="{{ assignment.assigned_by }}"
+                            data-start_date="{{ assignment.start_date|date:'Y-m-d' }}"
+                            data-end_date="{{ assignment.end_date|default:"N/A"|date:'Y-m-d' }}"
+                            data-remarks="{{ assignment.remarks|default:"" }}"
+                            style="display: none;">
+                        </tr>
+                        {% endfor %}
+
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="pagination-controls">
+                    <button id="prevPage" class="page-nav" aria-label="Previous Page">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div id="pageNumbers" class="page-numbers"></div>
+                    <button id="nextPage" class="page-nav" aria-label="Next Page">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div id="noResultsMessage" style="display: none; text-align: center;">
+                    <h3>NO RECORDS FOUND</h3>
+                </div>
+            </div>
+            <dialog id="confirmDialog">
+                <form method="dialog">
+                    <p>Are you sure you want to delete this asset?</p>
+                <div class="button-container">
+                    <button value="yes">Yes</button>
+                    <button value="no">No</button>
+                </div>
+                </form>
+            </dialog>   
+
+            <div id="myModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="form-container">
+                        <div class="form-header">Add Asset</div>
+                        <div class="form-body">
+                            <form id="addAssetForm" method="POST" action="{% url 'add_asset' %}" enctype="multipart/form-data">
+                                {% csrf_token %}  
+                                <div class="form-group">
+                                    <label for="asset_name">Asset Name*</label>
+                                    <input type="text" id="asset_name" name="Asset_name" placeholder="Asset Name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="asset_type">Asset Type*</label>
+                                    <input type="text" id="asset_input" name="Asset_type" placeholder="Type or select an asset" list="asset_list" required>
+                                    <datalist id="asset_list">
+                                        {% for category in categories %}
+                                            <option value="{{ category.Category_type }}">{{category.Category_type}}</option>
+                                        {% endfor %}
+                                    </datalist>
+                                    <div id="asset_type_error" class="error-message" style="color: red; display: none;">Select a valid asset type from the list.</div>
+                                </div>                              
+                                <div class="form-group">
+                                    <label for="serial">Serial Number</label>
+                                    <input type="text" id="serial" name="Serial_number" placeholder="Serial Number" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="modelNumber">Model Number</label>
+                                    <input type="text" id="modelNumber" name="Model_number" placeholder="Model Number" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="machine">Machine & OS Configuration</label>
+                                    <input type="text" id="machine" name="Machine_OS_configuration" placeholder="Machine & OS" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="movable">Movable/Nonmovable</label>
+                                    <select id="movable" name="Movable_nonmovable" required>
+                                        <option value="" disabled selected>--Select--</option>
+                                        <option value="movable">Movable</option>
+                                        <option value="nonmovable">Nonmovable</option>
+                                    </select>
+                                </div>
+                               
+
+            
+                                <div class="form-group">
+                                    <label for="status">Status*</label>
+                                    <select id="status" name="Status" required>
+                                        <option value="" disabled selected>--Select--</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vender">Vendor/Supplier</label>
+                                    <input type="text" id="vender" name="Vender_Supplier" placeholder="Vendor/Supplier">
+                                </div>
+                                <div class="form-group">
+                                    <label for="maintain">Maintenance</label>
+                                    <select id="maintain" name="Maintenance" required>
+                                        <option value="" disabled selected>--Select--</option>
+                                        <option value="AMC">AMC</option>
+                                        <option value="Warranty">Warranty</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="price">Price</label>
+                                    <input type="text" id="price" name="price" placeholder="Price" required oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')">
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="date">Year Of Purchasing</label>
+                                    <input type="date" pattern="\d{4}-\d{2}-\d{2}"  id="date" name="Year_of_purchasing" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="expiry">Year Of Expiry</label>
+                                    <input type="date" pattern="\d{4}-\d{2}-\d{2}"  id="expiry" name="Year_of_expiry" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="age">Age Of Asset</label>
+                                    <input type="text" id="age" name="Age_life" placeholder="Age Of Asset" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="myFile">Supporting Docs</label>
+                                    <input type="file" id="myFile" name="Supporting_docs" accept=".pdf,.doc,.docx">
+                                </div>
+                                <div class="form-group">
+                                    <label for="asset_img">Image Of Asset</label>
+                                    <input type="file" id="asset_img" name="images"  accept="image/*">
+                                    <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width:90%; height:auto;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="notes">Notes</label>
+                                    <input type="text" id="notes" name="Notes" placeholder="Notes">
+                                </div>
+                                <div class="form-buttons">
+                                    <button type="submit" class="save-btn">Save</button>
+                                    <button type="button" class="reset-btn" id="resetFormBtn">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="editModal" class="modal">
+                <div class="modal-content">
+                    <div class="form-container">
+                        <div class="form-header">Edit Asset</div>
+                        <div class="form-body">
+                            <form id="editForm" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" id="editAssetId" name="id">
+                                <div class="form-group">
+                                    <label for="editAssetName">Asset Name*</label>
+                                    <input type="text" id="editAssetName" name="Asset_name" placeholder="Asset Name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editAssetType">Asset Type*</label>
+                                    <input type="text" id="editAssetType" name="Asset_type" placeholder="Type or select an asset" list="asset_list" required>
+                                    <datalist id="asset_list">
+                                        {% for category in categories %}
+                                            <option value="{{ category.Category_type }}">{{category.Category_type}}</option>
+                                        {% endfor %}
+                                    </datalist>
+                                    <div id="edit_asset_type_error" class="error-message" style="display: none;">Select a valid asset type from the list.</div>    
+                                </div>  
+                                <div class="form-group">
+                                    <label for="editSerial">Serial Number</label>
+                                    <input type="text" id="editSerial" name="Serial_number" placeholder="Serial Number" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editModelNumber">Model Number</label>
+                                    <input type="text" id="editModelNumber" name="Model_number" placeholder="Model Number" required>
+                                </div>
+                
+                                <div class="form-group">
+                                    <label for="editMachine">Machine & OS Configuration</label>
+                                    <input type="text" id="editMachine" name="Machine_OS_configuration" placeholder="Machine & OS" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editMovable">Movable/Nonmovable</label>
+                                    <select id="editMovable" name="Movable_nonmovable" required>
+                                        <option value="movable">Movable</option>
+                                        <option value="nonmovable">Nonmovable</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="editStatus">Status*</label>
+                                    <select id="editStatus" name="Status" required>
+                                        <option value="" disabled selected>--Select--</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editVendor">Vendor/Supplier</label>
+                                    <input type="text" id="editVendor" name="Vender_Supplier" placeholder="Vendor/Supplier">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editMaintain">Maintenance</label>
+                                    <select id="editMaintain" name="Maintenance" required>
+                                        <option value="AMC">AMC</option>
+                                        <option value="Warranty">Warranty</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editPrice">Price</label>
+                                    <input type="text" id="editPrice" name="price" placeholder="Price" required oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editDate">Year Of Purchasing</label>
+                                    <input type="date" pattern="\d{4}-\d{2}-\d{2}" id="editDate" name="Year_of_purchasing" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editExpiry">Year Of Expiry</label>
+                                    <input type="date" pattern="\d{4}-\d{2}-\d{2}" id="editExpiry" name="Year_of_expiry" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editAge">Age Of Asset</label>
+                                    <input type="text" id="editAge" name="Age_life" placeholder="Age Of Asset" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editMyFile">Supporting Docs</label>
+                                    <input type="file" id="editMyFile" name="Supporting_docs" accept=".pdf,.doc,.docx">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editAssetImg">Image Of Asset</label>
+                                    <input type="file" id="editAssetImg" name="images"  accept="image/*">
+                                    <img id="editImagePreview" src="#" alt="Image Preview" style="display:none; max-width:100%; height:auto;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editNotes">Notes</label>
+                                    <input type="text" id="editNotes" name="Notes" placeholder="Notes">
+                                </div>
+                                <div class="form-buttons">
+                                    <button type="submit" class="save-btn">Save</button>
+                                    <button type="button" class="reset-btn" onclick="closeEditModal()">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="assignModal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <div class="form-container">
+                        <div class="form-header">
+                            Assign Asset
+                        </div>
+                        <div class="form-body">
+                            <form id="assignForm" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" id="assignAssetId" name="asset_id" >
+                                <div class="form-group">
+                                    <label for="assignAssetName">Asset Name:</label>
+                                    <input type="text" id="assignAssetName" name="asset_name" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="assignTo">Assign To:</label>
+                                    <select id="assignTo" name="assigned_to" required>
+                                        <option value="">Select Employee</option>
+                                        {% for employee in employees %}
+                                            <option value="{{ employee.id }}" {% if employee.id == current_assigned_to %}selected{% endif %}>
+                                                {{ employee.employee_name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="assignStartDate">Start Date:</label>
+                                    <input type="date" id="assignStartDate" name="start_date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="assignRemarks">Remarks:</label>
+                                    <textarea id="assignRemarks" name="remarks"></textarea>
+                                </div>
+                                <div class="form-buttons">
+                                    <button type="submit" class="save-btn">Assign</button>
+                                    <button type="button" class="reset-btn" onclick="closeAssignModal()">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="returnModal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <div class="form-container">
+                        <div class="form-header">
+                            Return Asset
+                        </div>
+                        <div class="form-body">
+                            <form id="returnForm" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" id="returnAssetId" name="asset_id">
+                                <div class="form-group">
+                                    <label for="returnAssetName">Asset Name:</label>
+                                    <input type="text" id="returnAssetName" name="asset_name" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="returnAssignedTo">Assigned To:</label>
+                                    <input type="text" id="returnAssignedTo" name="assigned_to" readonly>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="returnDate">Return Date:</label>
+                                    <input type="date" id="returnDate" name="return_date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="returnRemarks">Remarks:</label>
+                                    <textarea id="returnRemarks" name="remarks"></textarea>
+                                </div>
+                                <div class="form-buttons">
+                                    <button type="submit" class="save-btn">Return</button>
+                                    <button type="button" class="reset-btn" onclick="closeReturnModal()">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+
+            <div id="historyModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="form-container">
+                        <div class="form-header">
+                            History
+                        </div>
+                        <div class="form-body">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr>
+                                        <th>Sl No</th>
+                                        <th>Assigned To</th>
+                                        <th>Assigned By</th>
+                                        <th>Assigned Date</th>
+                                        <th>Return Date</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historyTableBody">
+                                    <!-- History data will be inserted here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-footer" style="text-align: center; margin-top: 20px;">
+                            <button type="button" class="history_close" onclick="closeModal()">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+
+            
+            <script>
+                 document.getElementById('settings-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('.left').classList.toggle('show-dropdown');
+        });
+                document.addEventListener('DOMContentLoaded', function() {
+                    const addUserButton = document.getElementById('addUserButton');
+                    const addModal = document.getElementById('myModal');
+                    const addForm = document.getElementById('addAssetForm');
+                    const resetFormBtn = document.getElementById('resetFormBtn');
+                    const searchInput = document.getElementById('searchInput');
+                    const noResultsMessage = document.getElementById('noResultsMessage');
+                    const cancelFormBtn = document.getElementById('resetFormBtn'); //Changed to 'cancelFormBtn'
+
+                    function closeModal() {
+                        addModal.style.display = 'none';
+                    }
+
+                    cancelFormBtn.addEventListener('click', function() {
+                        closeModal();
+                    });
+            
+                    // Search functionality
+                    searchInput.addEventListener('input', function() {
+                        const filter = this.value.toLowerCase();
+                        const rows = document.querySelectorAll('#AssetTable tbody tr');
+                        let hasResults = false;
+            
+                        rows.forEach(row => {
+                            const AssetName = row.cells[1].textContent.toLowerCase();
+                            if (AssetName.includes(filter)) {
+                                row.style.display = '';
+                                hasResults = true;
+                            } else {
+                                row.style.display = 'none';
+                            }
+                        });
+            
+                        noResultsMessage.style.display = hasResults ? 'none' : 'block';
+                    });
+            
+                    addUserButton.onclick = function() {
+                        addForm.reset()
+                        addModal.style.display = 'block';
+                    };
+            
+                
+            
+                    // Edit icon click event handling
+                    const editIcons = document.querySelectorAll('.edit-icon');
+                    const editModal = document.getElementById('editModal');
+                    const editForm = document.getElementById('editForm');
+                    const editAssetName = document.getElementById('editAssetName');
+                    const editAssetType = document.getElementById('editAssetType');
+                    const editStatus = document.getElementById('editStatus');
+                    const editAssetImg = document.getElementById('editAssetImg');
+                    const editSerial = document.getElementById('editSerial');
+                    const editModel = document.getElementById('editModelNumber');
+                    const editMachine = document.getElementById('editMachine');
+                    const editMovable = document.getElementById('editMovable');
+                    const editVendor = document.getElementById('editVendor');
+                    const editmaintain = document.getElementById('maintain');
+                    const editPrice = document.getElementById('editPrice');
+                    const editDate = document.getElementById('editDate');
+                    const editExpiry = document.getElementById('editExpiry');
+                    const editAge = document.getElementById('editAge');
+                    const editMyFile = document.getElementById('editMyFile');
+                    const editNotes = document.getElementById('editNotes');
+            
+                    editIcons.forEach(icon => {
+                        icon.addEventListener('click', function() {
+                            const assetId = this.querySelector('i').getAttribute('data-id');
+                            const row = this.closest('tr');
+                            const AssetName = row.cells[1].textContent.trim();
+                            const AssetType = row.cells[2].textContent.trim();
+                            const Status = row.cells[3].textContent.trim();
+                            const AssetImg = row.cells[5].textContent.trim();
+                            const Serial_number = row.getAttribute('data-Serial_number');
+                            const Model_number = row.getAttribute('data-Model_number');
+                            const machine = row.getAttribute('data-Machine');
+                            const movable = row.getAttribute('data-movable');
+                            const vendor = row.getAttribute('data-vendor');
+                            const maintenance = row.getAttribute('data-Maintenance');
+                            const price = row.getAttribute('data-price');
+                            const Year_of_purchasing = row.getAttribute('data-year_of_purchase');
+                            const Year_of_expiry = row.getAttribute('data-year_of_expiry');
+                            const age_life = row.getAttribute('data-age_life');
+                            const notes = row.getAttribute('data-notes');
+            
+                            editAssetName.value = AssetName;
+                            editAssetType.value = AssetType;
+                            editStatus.value = Status;
+                            editAssetImg.value = '';
+                            editSerial.value = Serial_number;
+                            editModel.value = Model_number;
+                            editMachine.value = machine;
+                            editMovable.value = movable;
+                            editVendor.value = vendor;
+                            editmaintain.value = maintenance;
+                            editPrice.value = price;
+                            editDate.value = Year_of_purchasing;
+                            editExpiry.value = Year_of_expiry;
+                            editAge.value = age_life;
+                            editNotes.value = notes;
+            
+                            editForm.action = `/edit_asset/${assetId}/`;
+                            editModal.style.display = 'block';
+                        });
+                    });
+            
+                    // Function to close edit modal
+                    function closeEditModal() {
+                        editModal.style.display = 'none';
+                    }
+            
+                    const cancelButton = editForm.querySelector('.reset-btn');
+                    cancelButton.addEventListener('click', function() {
+                        closeEditModal();
+                    });
+            
+                    // Optional: Reset edit form fields on modal close
+                    editModal.addEventListener('click', function(event) {
+                        if (event.target === editModal) {
+                            closeEditModal();
+                        }
+                    });
+                    const deleteButtons = document.querySelectorAll('.delete-icon');
+                    const dialog = document.getElementById('confirmDialog');
+            
+                    deleteButtons.forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            event.preventDefault();
+                            const form = button.closest('form');
+            
+                            // Open the dialog
+                            dialog.showModal();
+            
+                            // Handle dialog closing
+                            dialog.addEventListener('close', function() {
+                                if (dialog.returnValue === 'yes') {
+                                    form.submit(); // Submit the form if 'yes' is selected
+                                }
+                            }, { once: true });
+                        });
+                    });
+            
+                    // Handle clicking outside dialog to close
+                    dialog.addEventListener('click', function(event) {
+                        if (event.target === dialog) {
+                            dialog.close('no'); // Close dialog if clicked outside
+                        }
+                    });
+            
+                    // Handle clicking on 'No' button to close dialog
+                    dialog.querySelectorAll('button').forEach(button => {
+                        button.addEventListener('click', function() {
+                            dialog.close(button.value);
+                        });
+                    });
+            
+                });
+                const showEntriesDropdown = document.getElementById('show-entries');
+    const rows = Array.from(document.querySelectorAll('#AssetTable tbody tr'));
+    const pageNumbersContainer = document.getElementById('pageNumbers');
+    const [prevPageButton, nextPageButton] = [document.getElementById('prevPage'), document.getElementById('nextPage')];
+
+    let rowsPerPage = 15, currentPage = 1;
+
+    const updateEntries = value => {
+    if (value === 'all') {
+        rowsPerPage = rows.length;  // Display all rows
+        currentPage = 1;
+    } else {
+        rowsPerPage = parseInt(value, 10) || 15;  // Default to 3 if value is invalid
+        currentPage = Math.min(Math.max(currentPage, 1), Math.ceil(rows.length / rowsPerPage));
+    }
+    rows.forEach((row, index) => row.style.display = (index >= (currentPage - 1) * rowsPerPage && index < currentPage * rowsPerPage) ? '' : 'none');
+    renderPagination(Math.ceil(rows.length / rowsPerPage));
+};
+
+    const renderPagination = totalPages => {
+        pageNumbersContainer.innerHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+            const pageNumber = document.createElement('button');
+            pageNumber.textContent = i;
+            pageNumber.className = 'page-number';
+            if (i === currentPage) pageNumber.classList.add('active');
+            pageNumber.onclick = () => { currentPage = i; updateEntries(showEntriesDropdown.value); };
+            pageNumbersContainer.appendChild(pageNumber);
+        }
+        prevPageButton.disabled = currentPage === 1;
+        nextPageButton.disabled = currentPage === totalPages;
+    };
+
+    const changePage = offset => { currentPage = Math.min(Math.max(currentPage + offset, 1), Math.ceil(rows.length / rowsPerPage)); updateEntries(showEntriesDropdown.value); };
+
+    prevPageButton.onclick = () => changePage(-1);
+    nextPageButton.onclick = () => changePage(1);
+    showEntriesDropdown.addEventListener('change', () => updateEntries(showEntriesDropdown.value));
+    
+    showEntriesDropdown.value = '15';
+    updateEntries('15');
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    // Function to handle validation for asset type inputs
+    function setupAssetTypeValidation(inputId, errorMessageId) {
+        var input = document.getElementById(inputId);
+        var datalist = document.getElementById('asset_list'); // Assuming the same datalist is used
+        var errorMessage = document.getElementById(errorMessageId);
+
+        // Filter the datalist options based on user input
+        input.addEventListener('input', function() {
+            var filter = input.value.toUpperCase();
+            var options = Array.from(datalist.options);
+            
+            // Check if the input value matches any option
+            var isValid = options.some(option => option.value.toUpperCase() === filter);
+
+            if (filter === '' || isValid) {
+                errorMessage.style.display = 'none';
+            } else {
+                errorMessage.style.display = 'block';
+            }
+        });
+
+        // Validate asset type on form submission
+        var form = input.closest('form');
+        if (form) {
+            form.addEventListener('submit', function(event) {
+                var inputVal = input.value;
+                var validOptions = Array.from(datalist.options).map(option => option.value);
+                
+                if (!validOptions.includes(inputVal)) {
+                    errorMessage.style.display = 'block'; // Show error message
+                    event.preventDefault(); // Prevent form submission
+                } else {                     errorMessage.style.display = 'none'; // Hide error message
+                }
+            });
+        }
+    }
+
+    // Set up validation for add asset modal
+    setupAssetTypeValidation('asset_input', 'asset_type_error');
+
+    // Set up validation for edit asset modal
+    setupAssetTypeValidation('editAssetType', 'edit_asset_type_error');
+});
+
+                   
+
+
+const taskIcons = document.querySelectorAll('.task-icon');
+const assignModal = document.getElementById('assignModal');
+const returnModal = document.getElementById('returnModal');
+const assignForm = document.getElementById('assignForm');
+const returnForm = document.getElementById('returnForm');
+const assignAssetName = document.getElementById('assignAssetName');
+const returnAssetName = document.getElementById('returnAssetName');
+
+taskIcons.forEach(icon => {
+    icon.addEventListener('click', function() {
+        const assetId = this.querySelector('i').getAttribute('data-id');
+        const row = this.closest('tr');
+        const assetName = row.cells[1].textContent.trim();
+        const assignedTo = row.cells[5].textContent.trim();
+
+        if (assignedTo === "Not Assigned") {
+            // Open the assign modal
+            assignAssetName.value = assetName;
+            assignForm.action = `/assign_asset/${assetId}/`;
+            assignModal.style.display = 'block';
+        } else {
+            // Open the return modal
+            returnAssetName.value = assetName;
+            document.getElementById('returnAssetId').value = assetId;
+            document.getElementById('returnAssignedTo').value = assignedTo;
+            returnForm.action = `/return_asset/${assetId}/`;
+            openReturnModal();
+        }
+    });
+});
+
+// Close the assign modal
+function closeAssignModal() {
+    assignModal.style.display = 'none';
+}
+
+// Close the return modal
+function closeReturnModal() {
+    returnModal.style.display = 'none';
+}
+
+// Set current date when opening the return modal
+function openReturnModal() {
+    const returnDateInput = document.getElementById('returnDate');
+
+    // Get current date
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+
+    // Set the value of returnDate to today's date
+    returnDateInput.value = `${year}-${month}-${day}`;
+
+    // Show the return modal
+    returnModal.style.display = 'block';
+
+    
+}
+
+function showHistoryModal(serialNumber) {
+    // Get the modal and table body elements
+    const historyModal = document.getElementById('historyModal');
+    const historyTableBody = document.getElementById('historyTableBody');
+    
+    // Clear any previous history details
+    historyTableBody.innerHTML = '';
+
+    // Select all hidden rows corresponding to the clicked asset's serial number
+    const historyRows = document.querySelectorAll(`#history-${serialNumber}[data-history="true"]`);
+
+    // Check if there are history records for the asset
+    if (historyRows.length > 0) {
+        historyRows.forEach((row, index) => {
+            const assignedTo = row.getAttribute('data-assigned_to');
+            const assignedBy = row.getAttribute('data-assigned_by');
+            const startDate = row.getAttribute('data-start_date');
+            const endDate = row.getAttribute('data-end_date');
+            const remarks = row.getAttribute('data-remarks');
+
+            // Create a new row in the modal's table with the asset's history details
+            const historyRow = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${assignedTo}</td>
+                    <td>${assignedBy}</td>
+                    <td>${startDate}</td>
+                    <td>${endDate}</td>
+                    <td>${remarks}</td>
+                </tr>
+            `;
+
+            // Insert the new row into the history table body
+            historyTableBody.insertAdjacentHTML('beforeend', historyRow);
+        });
+
+        // Display the modal
+        historyModal.style.display = 'block';
+    } else {
+        // Handle case where there is no history (optional)
+        historyTableBody.innerHTML = '<tr><td colspan="6">No history available for this asset.</td></tr>';
+        historyModal.style.display = 'block';
+    }
+}
+
+// Close the modal when the close button is clicked
+function closeModal() {
+    const historyModal = document.getElementById('historyModal');
+    historyModal.style.display = 'none';
+}
+
+
+              
+
+        </script>
+    </body>
+</html>

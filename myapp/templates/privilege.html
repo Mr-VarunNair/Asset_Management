@@ -1,0 +1,306 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <style>
+             body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .left {
+            width: 20%;
+            background-color: #222;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 10px;
+            color: white;
+            position: relative;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #444;
+        }
+        .user-profile img {
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            margin-right:5px;
+        }
+        .user-profile .username {
+            font-size: 20px;
+            color: white;
+        }
+        .navigation {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .navigation li {
+            margin: 20px 0;
+        }
+        .navigation a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .navigation a:hover, .navigation a:focus {
+            background-color: #444;
+        }
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition-duration: 0.4s;
+            position: absolute;
+            bottom: 10px;
+            width: calc(100% - 20px);
+        }
+        .logout-btn:hover, .logout-btn:focus {
+            background-color: #d32f2f;
+        }
+        .right {
+            width: 80%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .welcome-admin {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .statistics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .stat-box {
+            flex: 1 1 calc(25% - 40px);
+            background-color: #f1f1f1;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
+        }
+        .stat-box:hover, .stat-box:focus {
+            transform: translateY(-10px);
+            background-color: #e0e0e0;
+            box-shadow: 0 15px 20px rgba(0, 0, 0, 0.2);
+        }
+        .stat-box h2 {
+            margin: 0;
+            font-size: 36px;
+            color: #333;
+        }
+        .stat-box p {
+            margin: 10px 0 0;
+            font-size: 18px;
+            color: #666;
+        }
+        .stat-box i {
+            font-size: 50px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .dropdown {
+            display: none;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .dropdown li {
+            margin: 10px 0;
+        }
+        .dropdown a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .dropdown a:hover, .dropdown a:focus {
+            background-color: #444;
+        }
+        .show-dropdown .dropdown {
+            display: block;
+        }
+        .show-dropdown .navigation > li:not(.settings) {
+            display: none;
+        }
+        .show-dropdown .settings {
+            margin-top: 0;
+        }
+        .settings i.dropdown-icon {
+            margin-left: 10px;
+            transition: transform 0.3s;
+        }
+        .show-dropdown .settings i.dropdown-icon {
+            transform: rotate(180deg);
+        }
+            .right {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 80vh;
+                gap: 20px;
+            }
+            .icon-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 30px;
+            }
+            .icon-container div {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 100px;
+                height: 100px;
+                border: 1px solid #ccc;
+                border-radius: 10px;
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+            .icon-container div:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 4px 8px #2c3e50;
+            }
+            .icon-container i {
+                font-size: 3rem;
+                color: black;
+            }
+            .icon-container span {
+                margin-top: 10px;
+                font-size: 1rem;
+                color: black;
+            }
+            .icon-container a{
+                text-decoration: none;
+            }
+            .backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    backdrop-filter: blur(5px); /* Blur effect */
+    z-index: 999; /* Ensure it's on top of other content */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.alert-box {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+    text-align: center;
+    max-width: 300px;
+    color:darkgreen;
+}
+
+        </style>
+    </head>
+<body>
+    {% if role == 'CISO' %}
+    {% include 'cisonavigation.html' %}
+    {% elif role == 'Fnhead' %}
+    {% include 'fnheadnavigation.html' %}
+    {% elif role == 'System Admin' %}
+    {% include 'systemadminnavigation.html' %}
+    {% elif role == 'Asset Owner' %}
+    {% include 'assetownernavigation.html' %}
+    {% else %}
+    {% include 'adminnavigation.html' %}
+    {% endif %}
+    
+    <div class="right">
+        {% if messages %}
+            <div class="backdrop">
+                <div class="alert-box">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        <div class="icon-container">
+            
+            <a href="{% url 'privilege_page' 'Fnhead' %}">
+                <div title="HEAD">
+                    <i class="fas fa-user-tie"></i>
+                    <span> Functional Head</span>
+                </div>
+            </a>
+            <a href="{% url 'privilege_page' 'AssetOwner' %}">
+                <div title="ASSET OWNER">
+                    <i class="fas fa-user-tag"></i>
+                    <span>Asset Owner</span>
+                </div>
+            </a>
+            <a href="{% url 'privilege_page' 'SystemAdmin' %}">
+                <div title="SYSTEM ADMIN">
+                    <i class="fas fa-user-lock"></i>
+                    <span>System Admin</span>
+                </div>
+            </a>
+            <a href="{% url 'privilege_page' 'CISO' %}">
+                <div title="CISO">
+                    <i class="fas fa-user-shield"></i>
+                    <span>CISO</span>
+                </div>
+            </a>
+        </div>
+        
+    </div>
+    
+  
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var alertBox = document.querySelector('.alert-box');
+            var backdrop = document.querySelector('.backdrop');
+            if (alertBox) {
+                setTimeout(function() {
+                    alertBox.style.opacity = 0;
+                    backdrop.style.opacity = 0;
+                    setTimeout(function() {
+                        alertBox.style.display = 'none';
+                        backdrop.style.display = 'none';
+                        document.body.style.overflow = 'auto'; // Re-enable scrolling
+                    }, 150); // Time to match the fade-out effect
+                }, 700); // Time the message should be visible
+            }
+        });
+        document.getElementById('settings-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('.left').classList.toggle('show-dropdown');
+        });
+    </script>
+</body>
+</html>
